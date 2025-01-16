@@ -57,7 +57,7 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
    
-
+    //create shader
     Shader shader = Shader("Resources/Shaders/Basic.shader");
 
 
@@ -75,6 +75,7 @@ int main()
     }
 
     glfwTerminate();
+
 
 
     return 0;
