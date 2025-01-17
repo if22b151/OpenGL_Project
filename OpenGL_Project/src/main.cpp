@@ -1,6 +1,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include "Shader.h"
 
@@ -59,7 +60,6 @@ int main()
    
     //create shader
     Shader shader = Shader("Resources/Shaders/Basic.shader");
-
 
     while (!glfwWindowShouldClose(window))
     {
