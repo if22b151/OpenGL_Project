@@ -6,7 +6,8 @@
 
 void Renderer::Clear() const
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+    // Because of clearing depth buffer, upper and lower part of the sphere rotate in the same direction
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
