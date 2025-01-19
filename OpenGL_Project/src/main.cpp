@@ -88,45 +88,46 @@ int main() {
         shader.SetUniform1i("u_Texture", 0);
 
         Sphere sun(1.0f, 384, 216, "Resources/Textures/Sun2.0.jpg");
-        sun.SetPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
+        sun.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
         sun.SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
 
         Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg");
-        earth.SetPosition(glm::vec3(-15.0f, 0.0f, 0.0f));
+        earth.SetPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
         earth.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
         auto vertices = earth.GetVertices();
         auto indices = earth.GetIndices();
 
         Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg");
-        moon.SetPosition(glm::vec3(-15.0f, 0.0f, 2.0f));
+        moon.SetPosition(glm::vec3(-10.0f, 0.0f, 2.0f));
         moon.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
+        moon.SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
         Sphere mars(0.5f, 384, 216, "Resources/Textures/Mars.jpg");
-        mars.SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+        mars.SetPosition(glm::vec3(-12.0f, 0.0f, 0.0f));
         mars.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
 
         Sphere venus(0.7f, 384, 216, "Resources/Textures/Venus.jpg");
-        venus.SetPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
+        venus.SetPosition(glm::vec3(-6.0f, 0.0f, 0.0f));
         venus.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
 
         Sphere mercury(0.3f, 384, 216, "Resources/Textures/Mercury.jpg");
-        mercury.SetPosition(glm::vec3(-12.0f, 0.0f, 0.0f));
+        mercury.SetPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
         mercury.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 
         Sphere jupiter(2.0f, 384, 216, "Resources/Textures/Jupiter.jpg");
-        jupiter.SetPosition(glm::vec3(5.0f, 0.0f, 0.0f));
+        jupiter.SetPosition(glm::vec3(15.0f, 0.0f, 0.0f));
         jupiter.SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
         Sphere saturn(1.5f, 384, 216, "Resources/Textures/Saturn.jpg");
-        saturn.SetPosition(glm::vec3(8.0f, 0.0f, 0.0f));
+        saturn.SetPosition(glm::vec3(20.0f, 0.0f, 0.0f));
         saturn.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
         Sphere uranus(1.0f, 384, 216, "Resources/Textures/Uranus.jpg");
-        uranus.SetPosition(glm::vec3(11.0f, 0.0f, 0.0f));
+        uranus.SetPosition(glm::vec3(25.0f, 0.0f, 0.0f));
         uranus.SetScale(glm::vec3(0.8f, 0.8f, 0.8f));
 
         Sphere neptune(1.0f, 384, 216, "Resources/Textures/Neptun.jpg");
-        neptune.SetPosition(glm::vec3(14.0f, 0.0f, 0.0f));
+        neptune.SetPosition(glm::vec3(30.0f, 0.0f, 0.0f));
         neptune.SetScale(glm::vec3(0.8f, 0.8f, 0.8f));
 
         //create vertex array
@@ -154,7 +155,7 @@ int main() {
         glm::mat4 proj = glm::perspective(glm::radians(50.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 
         // Camera position
-        glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 30.0f);
+        glm::vec3 cameraPosition = glm::vec3(0.0f, 20.0f, 50.0f);
 
         // Looking at the origin
         glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -204,7 +205,7 @@ int main() {
             saturn.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
             uranus.SetRotation(glm::vec3(rotationAngle, 0.0f, 0.0f));
             neptune.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
-            moon.SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
 
             //Draw Sun
             {
@@ -262,8 +263,6 @@ int main() {
             {
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, moon.GetPosition());
-                //moon doesnt rotate around its own axis
-                model = glm::rotate(model, glm::radians(earth.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
                 model = glm::scale(model, moon.GetScale());
                 glm::mat4 mvp = proj * view * model;
                 shader.Bind();
