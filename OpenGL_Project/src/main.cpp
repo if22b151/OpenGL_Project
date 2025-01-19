@@ -30,7 +30,7 @@ float lastFrameTime = 0.0f;
 // Function to calculate and return delta time
 float getDeltaTime() {
     // Get the current time
-    float currentFrameTime = glfwGetTime();
+    float currentFrameTime = (float)glfwGetTime();
 
     // Calculate delta time (time difference between frames)
     float deltaTime = currentFrameTime - lastFrameTime;
@@ -71,19 +71,7 @@ int main() {
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
-    {
-        //float positions[] = {
-        //    -50.0f, -50.0f, 0.0f, 0.0f, //0
-        //     50.0f, -50.0f, 1.0f, 0.0f, //1
-        //     50.0f, 50.0f, 1.0f, 1.0f, //2
-        //    -50.0f, 50.0f, 0.0f, 1.0f  //3
-        //};
-
-        ////use index buffer to draw something without repeating vertices
-        //unsigned int indices[] = {
-        //    0, 1, 2,
-        //    2, 3, 0
-        //};
+    
 
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(Renderer::GLDebugMessage, 0);
@@ -93,19 +81,53 @@ int main() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
         //shader
         Shader shader("Resources/Shaders/Basic.shader");
         shader.Bind();
         shader.SetUniform1i("u_Texture", 0);
 
-        //Texture
-        Texture texture("Resources/Textures/Earth1920x1080.jpg");
-        texture.Bind();
-        
+        Sphere sun(1.0f, 384, 216, "Resources/Textures/Sun2.0.jpg");
+        sun.SetPosition(glm::vec3(-5.0f, 0.0f, 0.0f));
+        sun.SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
 
-        Sphere sphere(1.0f, 384, 216);
+        Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg");
+        earth.SetPosition(glm::vec3(-15.0f, 0.0f, 0.0f));
+        earth.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+        auto vertices = earth.GetVertices();
+        auto indices = earth.GetIndices();
 
-        auto vertices = sphere.GetVertices();
+        Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg");
+        moon.SetPosition(glm::vec3(-15.0f, 0.0f, 2.0f));
+        moon.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
+
+        Sphere mars(0.5f, 384, 216, "Resources/Textures/Mars.jpg");
+        mars.SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+        mars.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
+
+        Sphere venus(0.7f, 384, 216, "Resources/Textures/Venus.jpg");
+        venus.SetPosition(glm::vec3(-10.0f, 0.0f, 0.0f));
+        venus.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
+
+        Sphere mercury(0.3f, 384, 216, "Resources/Textures/Mercury.jpg");
+        mercury.SetPosition(glm::vec3(-12.0f, 0.0f, 0.0f));
+        mercury.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
+
+        Sphere jupiter(2.0f, 384, 216, "Resources/Textures/Jupiter.jpg");
+        jupiter.SetPosition(glm::vec3(5.0f, 0.0f, 0.0f));
+        jupiter.SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+
+        Sphere saturn(1.5f, 384, 216, "Resources/Textures/Saturn.jpg");
+        saturn.SetPosition(glm::vec3(8.0f, 0.0f, 0.0f));
+        saturn.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+        Sphere uranus(1.0f, 384, 216, "Resources/Textures/Uranus.jpg");
+        uranus.SetPosition(glm::vec3(11.0f, 0.0f, 0.0f));
+        uranus.SetScale(glm::vec3(0.8f, 0.8f, 0.8f));
+
+        Sphere neptune(1.0f, 384, 216, "Resources/Textures/Neptun.jpg");
+        neptune.SetPosition(glm::vec3(14.0f, 0.0f, 0.0f));
+        neptune.SetScale(glm::vec3(0.8f, 0.8f, 0.8f));
 
         //create vertex array
         VertexArray va;
@@ -120,31 +142,34 @@ int main() {
         va.AddBuffer(vb, layout);
 
 
-        auto indices = sphere.GetIndices();
         //create index buffer
         IndexBuffer ib(indices.data(), indices.size());
 
-        //create projection matrix, orthographic projection because we are in 2D
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-       
-        // Camera at (0, 0, 3)
-        glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 4.0f);
-        
-        // Looking at the origin
-        glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f);       
-        
-        // Up direction is positive Y
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);            
-
-        //create view matrix, camera appears to be at camera position and looking at target
-        glm::mat4 view = glm::lookAt(cameraPosition, target, up);
-        
         va.Unbind();
         shader.Unbind();
         vb.Unbind();
         ib.Unbind();
 
-        Renderer renderer;
+        //create projection matrix, orthographic projection because we are in 2D
+        glm::mat4 proj = glm::perspective(glm::radians(50.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+
+        // Camera position
+        glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 30.0f);
+
+        // Looking at the origin
+        glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f);
+
+        // Up direction is positive Y
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        //create view matrix, camera appears to be at camera position and looking at target
+        glm::mat4 view = glm::lookAt(cameraPosition, target, up);
+
+        float rotationSpeed = 30.0f; 
+
+        // By how much to rotate the object
+        float rotationAngle = 0.0f; 
+
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -153,45 +178,14 @@ int main() {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 430");
 
-        //glm::vec3 translationA(200, 200, 0);
-        //glm::vec3 translationB(400, 200, 0);
-        auto objectposition = glm::vec3(0.0f, 0.0f, 0.0f);
-        /*float rotationX = glm::radians(0.0f);
-        float rotationY = glm::radians(0.0f);
-        float rotationZ = glm::radians(0.0f);
-        auto rotationAxisx = glm::vec3(1.0f, 0.0f, 0.0f);
-        auto rotationAxisy = glm::vec3(0.0f, 1.0f, 0.0f);
-        auto rotationAxisz = glm::vec3(1.0f, 0.0f, 0.0f);*/
-        auto scale = glm::vec3(1.0f, 1.0f, 1.0f);
+        Renderer renderer;
 
-        float rotationSpeed = 30.0f; // Rotation speed in degrees per second
-        float rotationAngle = 0.0f; // Current rotation angle in degrees
-
-        /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window)) {
-            /* Render here */
             renderer.Clear();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-
-           
-          /*  {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-                glm::mat4 mvp = proj * view * model;
-                shader.Bind();
-                shader.SetUniformMat4f("u_MVP", mvp);
-                renderer.Draw(va, ib, shader);
-            }  
-            
-            {
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-                glm::mat4 mvp = proj * view * model;
-                shader.Bind();
-                shader.SetUniformMat4f("u_MVP", mvp);
-                renderer.Draw(va, ib, shader);
-            }*/
 
             auto deltaTime = getDeltaTime();
 
@@ -200,29 +194,151 @@ int main() {
             if (rotationAngle > 360.0f)
                 rotationAngle -= 360.0f;
 
-            //Draw a sphere
+
+            sun.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            earth.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            mars.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            venus.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            mercury.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            jupiter.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            saturn.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            uranus.SetRotation(glm::vec3(rotationAngle, 0.0f, 0.0f));
+            neptune.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
+            moon.SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
+            //Draw Sun
             {
                 glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, objectposition);
-                /*model = glm::rotate(model, rotationX, rotationAxisx);
-                model = glm::rotate(model, rotationY, rotationAxisy);
-                model = glm::rotate(model, rotationZ, rotationAxisz);*/
-                model = glm::rotate(model, glm::radians(rotationAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-                model = glm::scale(model, scale);
+                model = glm::translate(model, sun.GetPosition());
+                model = glm::rotate(model, glm::radians(sun.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, sun.GetScale());
                 glm::mat4 mvp = proj * view * model;
                 shader.Bind();
+                sun.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw mercury
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, mercury.GetPosition());
+                model = glm::rotate(model, glm::radians(mercury.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, mercury.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                mercury.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw venus
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, venus.GetPosition());
+                model = glm::rotate(model, glm::radians(venus.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, venus.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                venus.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw earth
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, earth.GetPosition());
+                model = glm::rotate(model, glm::radians(earth.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, earth.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                earth.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw moon
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, moon.GetPosition());
+                //moon doesnt rotate around its own axis
+                model = glm::rotate(model, glm::radians(earth.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, moon.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                moon.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw mars
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, mars.GetPosition());
+                model = glm::rotate(model, glm::radians(mars.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, mars.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                mars.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw Jupiter
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, jupiter.GetPosition());
+                model = glm::rotate(model, glm::radians(jupiter.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, jupiter.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                jupiter.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw Saturn
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, saturn.GetPosition());
+                model = glm::rotate(model, glm::radians(saturn.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, saturn.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                saturn.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw Uranus
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, uranus.GetPosition());
+                model = glm::rotate(model, glm::radians(uranus.GetRotation().x), glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::scale(model, uranus.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                uranus.texture.Bind();
+                shader.SetUniformMat4f("u_MVP", mvp);
+                renderer.Draw(va, ib, shader);
+            }
+
+            //Draw Neptune
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, neptune.GetPosition());
+                model = glm::rotate(model, glm::radians(neptune.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::scale(model, neptune.GetScale());
+                glm::mat4 mvp = proj * view * model;
+                shader.Bind();
+                neptune.texture.Bind();
                 shader.SetUniformMat4f("u_MVP", mvp);
                 renderer.Draw(va, ib, shader);
             }
 
 
             {
-                //imgui for changing rotation of object on all axis with three angles
-              /*ImGui::SliderAngle("Rotation X", &rotationX, -180.0f, 180.0f);
-                ImGui::SliderAngle("Rotation Y", &rotationY, -180.0f, 180.0f);
-                ImGui::SliderAngle("Rotation Z", &rotationZ, -180.0f, 180.0f);*/
-            
-
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             }
 
@@ -230,20 +346,16 @@ int main() {
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
-
-            /* Swap front and back buffers */
             glfwSwapBuffers(window);
 
-            /* Poll for and process events */
             glfwPollEvents();
         }
-
-    }
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
     glfwTerminate();
+
     return 0;
 }

@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-Sphere::Sphere(float radius, int sectorcount, int stackcount)
-    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount)
+Sphere::Sphere(float radius, int sectorcount, int stackcount, std::string texturepath)
+    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath)
 {
     generateVertices();
     generateIndices();
@@ -33,10 +33,10 @@ void Sphere::generateVertices()
             m_vertices.push_back(z);
 
             // UV coordinates
-            float u = (sector) / float(m_sectorcount);
+            float u = 1.0f - (sector) / float(m_sectorcount);
             // For the last vertex in each row, force U to 1.0
             if (sector == m_sectorcount) {
-                u = 1.0f;
+                u = 0.0f;
             }
             float v = 1.0f - float(stack) / float(m_stackcount);
 

@@ -1408,7 +1408,31 @@
     <Image Include="Resources\Textures\Earth.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Resources\Textures\Earth1920x1080.jpg">
+    <Image Include="Resources\Textures\Mars.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Venus.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Mercury.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Jupiter.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Saturn.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Uranus.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Neptun.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Sun.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Sun2.0.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -604,7 +604,15 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\Earth.jpg" />
-    <Image Include="Resources\Textures\Earth1920x1080.jpg" />
+    <Image Include="Resources\Textures\Jupiter.jpg" />
+    <Image Include="Resources\Textures\Mars.jpg" />
+    <Image Include="Resources\Textures\Mercury.jpg" />
+    <Image Include="Resources\Textures\Neptun.jpg" />
+    <Image Include="Resources\Textures\Saturn.jpg" />
+    <Image Include="Resources\Textures\Sun.jpg" />
+    <Image Include="Resources\Textures\Sun2.0.jpg" />
+    <Image Include="Resources\Textures\Uranus.jpg" />
+    <Image Include="Resources\Textures\Venus.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
