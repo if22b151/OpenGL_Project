@@ -20,6 +20,7 @@
 #include "VertexBufferLayout.h"
 #include "Texture.h"
 #include "Sphere.h"
+#include "Camera.h"
 
 #define WINDOW_WIDTH 1240   
 #define WINDOW_HEIGHT 960
@@ -155,17 +156,6 @@ int main() {
         //create projection matrix, orthographic projection because we are in 2D
         glm::mat4 proj = glm::perspective(glm::radians(50.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 300.0f);
 
-        // Camera position
-        glm::vec3 cameraPosition = glm::vec3(0.0f, 20.0f, 150.0f);
-
-        // Looking at the origin
-        glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f);
-
-        // Up direction is positive Y
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-
-        //create view matrix, camera appears to be at camera position and looking at target
-        glm::mat4 view = glm::lookAt(cameraPosition, target, up);
 
         float rotationSpeed = 30.0f; 
 
@@ -180,6 +170,8 @@ int main() {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 430");
 
+        Camera camera;
+
         Renderer renderer;
 
 
@@ -191,6 +183,19 @@ int main() {
             ImGui::NewFrame();
 
             auto deltaTime = getDeltaTime();
+
+            if (camera.isRotationLocked()) {
+                ImGui::Text("Camera Rotation: Locked (Press R to unlock)");
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+            else {
+                ImGui::Text("Camera Rotation: Unlocked (Press R to lock)");
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+
+            camera.processKeyboardInput(window, deltaTime);
+            camera.processMouseInput(window, deltaTime);
+            auto view = camera.getViewMatrix();
 
             // Rotate the object
             rotationAngle += rotationSpeed * deltaTime;
@@ -223,20 +228,6 @@ int main() {
             uranus.SetRotation(glm::vec3(rotationAngle, 0.0f, 0.0f));
             neptune.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
 
-            // Draw the objects
-            {
-                ImGui::Begin("Solar System");
-                ImGui::Text("Mercury");
-                ImGui::Text("Venus");
-                ImGui::Text("Earth");
-                ImGui::Text("Moon");
-                ImGui::Text("Mars");
-                ImGui::Text("Jupiter");
-                ImGui::Text("Saturn");
-                ImGui::Text("Uranus");
-                ImGui::Text("Neptune");
-                ImGui::End();
-            }
             //Draw Sun
             {
                 glm::mat4 model = glm::mat4(1.0f);
