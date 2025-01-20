@@ -16,6 +16,9 @@ private:
     std::vector<float> m_vertices;
     std::vector<unsigned int> m_indices;
 
+    float m_orbitalradius;
+    float m_orbitalspeed;
+
 private:
     void generateVertices();
     void generateIndices();
@@ -24,7 +27,7 @@ public:
     Texture texture;
 
 public:
-    Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath);
+    Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius = 0.0f, float orbitalspeed = 0.0f);
     ~Sphere();
 
     //Getters
@@ -33,9 +36,12 @@ public:
     inline const glm::vec3 GetPosition() const { return m_position; }
     inline const glm::vec3 GetRotation() const { return m_rotation; }
     inline const glm::vec3 GetScale() const { return m_scale; }
+    inline const float GetOrbitalRadius() const { return m_orbitalradius; }
+    inline const float GetOrbitalSpeed() const { return m_orbitalspeed; }
     //Setters
     inline void SetPosition(const glm::vec3& position) { m_position = position; }
     inline void SetRotation(const glm::vec3& rotation) { m_rotation = rotation; }
     inline void SetScale(const glm::vec3& scale) { m_scale = scale; }
+
 
 };

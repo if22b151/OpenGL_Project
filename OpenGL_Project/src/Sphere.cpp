@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-Sphere::Sphere(float radius, int sectorcount, int stackcount, std::string texturepath)
-    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath)
+Sphere::Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius, float orbitalspeed)
+    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath), m_orbitalradius(orbitalradius), m_orbitalspeed(orbitalspeed)
 {
     generateVertices();
     generateIndices();
