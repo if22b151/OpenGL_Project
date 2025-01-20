@@ -136,7 +136,7 @@ int main() {
         VertexArray va;
 
         //create vertex buffer
-        VertexBuffer vb(vertices.data(), vertices.size() * sizeof(float));
+        VertexBuffer vb(vertices.data(), (unsigned int)vertices.size() * sizeof(float));
 
         VertexBufferLayout layout;
 
@@ -146,7 +146,7 @@ int main() {
 
 
         //create index buffer
-        IndexBuffer ib(indices.data(), indices.size());
+        IndexBuffer ib(indices.data(), (unsigned int)indices.size());
 
         va.Unbind();
         shader.Unbind();

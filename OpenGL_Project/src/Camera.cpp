@@ -65,7 +65,7 @@ void Camera::processMouseInput(GLFWwindow* window, float deltaTime)
     float xoffset = xpos - m_lastX;
 
     // Reversed: y coordinates go bottom to top
-    float yoffset = m_lastY - ypos;  
+    float yoffset = m_lastY - ypos;
 
     m_lastX = xpos;
     m_lastY = ypos;
