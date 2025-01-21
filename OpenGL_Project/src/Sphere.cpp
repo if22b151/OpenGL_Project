@@ -42,6 +42,15 @@ void Sphere::generateVertices()
 
             m_vertices.push_back(u);
             m_vertices.push_back(v);
+
+            // Normals
+            float nx = x / m_radius;  
+            float ny = y / m_radius;  
+            float nz = z / m_radius;  
+            
+            m_vertices.push_back(nx);
+            m_vertices.push_back(ny);
+            m_vertices.push_back(nz);
         }
     }
 }

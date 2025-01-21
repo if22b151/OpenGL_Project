@@ -20,6 +20,8 @@ private:
     float m_orbitalspeed;
 
 private:
+    //NOTE: Change generateVertices() and generateIndices() to public because now we generate vertices everytime we create a new sphere
+    //but we want to generate them only once and then use them for all spheres
     void generateVertices();
     void generateIndices();
 

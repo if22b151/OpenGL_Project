@@ -486,6 +486,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Resources\Shaders\Basic.shader" />
+    <None Include="Resources\Shaders\LightCube.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">

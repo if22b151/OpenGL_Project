@@ -39,5 +39,6 @@ public:
     bool isRotationLocked() const;
 
     glm::mat4 getViewMatrix() const;
+    inline glm::vec3 getPosition() const { return m_position; }
 
 };
