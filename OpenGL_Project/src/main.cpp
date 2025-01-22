@@ -53,6 +53,24 @@ void DrawSphere(Renderer& renderer, Shader& shader, const Sphere& sphere, const 
     renderer.Draw(va, ib, shader);
 }
 
+void DrawEarth(Renderer& renderer, Shader& earthShader, const Sphere& sphere, const glm::mat4& viewProj, const VertexArray& va, const IndexBuffer& ib) {
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), sphere.GetPosition());
+    model = glm::rotate(model, glm::radians(sphere.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, sphere.GetScale());
+    glm::mat4 mvp = viewProj * model;
+
+    glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+    earthShader.Bind();
+    sphere.texture.Bind(0);
+    sphere.normalMap.Bind(1);
+    earthShader.SetUniformMat4f("u_MVP", mvp);
+    earthShader.SetUniformMat4f("u_Model", model);
+    earthShader.SetUniformMat3f("u_NormalMatrix", normalMatrix);
+    earthShader.SetUniformGLMVec3f("u_LightPos", glm::vec3(0.0f, 0.0f, 0.0f)); // Sun position
+    glm::vec3 cameraPos = glm::vec3(glm::inverse(viewProj)[3]);
+    earthShader.SetUniformGLMVec3f("u_CameraPos", cameraPos);
+    renderer.Draw(va, ib, earthShader);
+}
 
 int main() {
     GLFWwindow* window;
@@ -164,6 +182,11 @@ int main() {
     shader.Bind();
     shader.SetUniform1i("u_Texture", 0);
 
+    Shader earthShader("Resources/Shaders/earth.shader");
+    earthShader.Bind();
+    earthShader.SetUniform1i("u_Texture", 0);
+    earthShader.SetUniform1i("u_NormalMap", 1);
+
     Shader lightCubeShader("Resources/Shaders/LightCube.shader");
 
     Sphere sun(1.0f, 384, 216, "Resources/Textures/Sun2.0.jpg");
@@ -178,7 +201,7 @@ int main() {
     venus.SetPosition(glm::vec3(venus.GetOrbitalRadius(), 0.0f, 0.0f));
     venus.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
 
-    Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg", 40.0f, 8.78f);
+    Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg", 40.0f, 8.78f, "Resources/Textures/NormalMapEarth.png");
     earth.SetPosition(glm::vec3(earth.GetOrbitalRadius(), 0.0f, 0.0f));
     earth.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
     auto vertices = earth.GetVertices();
@@ -220,6 +243,7 @@ int main() {
 
     layout.Push<float>(3);
     layout.Push<float>(2);
+    layout.Push<float>(3);
     layout.Push<float>(3);
     va.AddBuffer(vb, layout);
 
@@ -336,7 +360,7 @@ int main() {
         DrawSphere(renderer, shader, sun, viewProj, va, ib);
         DrawSphere(renderer, shader, mercury, viewProj, va, ib);
         DrawSphere(renderer, shader, venus, viewProj, va, ib);
-        DrawSphere(renderer, shader, earth, viewProj, va, ib);
+        DrawEarth(renderer, shader, earth, viewProj, va, ib);
         DrawSphere(renderer, shader, moon, viewProj, va, ib);
         DrawSphere(renderer, shader, mars, viewProj, va, ib);
         DrawSphere(renderer, shader, jupiter, viewProj, va, ib);

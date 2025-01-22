@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include "Renderer.h"
+#include "glm/gtc/type_ptr.inl"
 
 
 Shader::Shader(const std::string& filepath)
@@ -24,9 +25,19 @@ void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
     glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);  
 }
 
+void Shader::SetUniformMat3f(const std::string& name, const glm::mat3& matrix)
+{
+    glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+}
+
 void Shader::SetUniformVec3f(const std::string& name, const glm::vec3& vector)
 {
     glUniform3f(GetUniformLocation(name), vector.x, vector.y, vector.z);
+}
+
+void Shader::SetUniformGLMVec3f(const std::string& name, const glm::vec3& vector)
+{
+    glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(vector));
 }
 
 void Shader::SetUniformVec3f(const std::string& name, float v0, float v1, float v2)

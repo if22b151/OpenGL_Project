@@ -56,6 +56,7 @@ void Sphere::generateVertices()
             } else {
                 tangent = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), normal));
             }
+            
             m_vertices.push_back(tangent.x);
             m_vertices.push_back(tangent.y);
             m_vertices.push_back(tangent.z);
