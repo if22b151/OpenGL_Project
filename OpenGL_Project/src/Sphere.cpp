@@ -5,12 +5,9 @@
 
 Sphere::Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius, float orbitalspeed)
     : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath), m_orbitalradius(orbitalradius), m_orbitalspeed(orbitalspeed)
-{
-    generateVertices();
-    generateIndices();
-}
+{}
 
-void Sphere::generateVertices()
+const std::vector<float>& Sphere::generateVertices()
 {
     m_vertices.clear();
 
@@ -53,9 +50,10 @@ void Sphere::generateVertices()
             m_vertices.push_back(nz);
         }
     }
+    return m_vertices;
 }
 
-void Sphere::generateIndices()
+const std::vector<unsigned int>& Sphere::generateIndices()
 {
     m_indices.clear();
 
@@ -80,6 +78,7 @@ void Sphere::generateIndices()
             m_indices.push_back(nextNext);
         }
     }
+    return m_indices;
 }
 
 

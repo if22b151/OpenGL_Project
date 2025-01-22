@@ -181,8 +181,8 @@ int main() {
     Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg", 40.0f, 8.78f);
     earth.SetPosition(glm::vec3(earth.GetOrbitalRadius(), 0.0f, 0.0f));
     earth.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-    auto vertices = earth.GetVertices();
-    auto indices = earth.GetIndices();
+    auto vertices = earth.generateVertices();
+    auto indices = earth.generateIndices();
 
     Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg", 2.0f, 9.0f);
     moon.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
@@ -254,7 +254,7 @@ int main() {
     Renderer renderer;
 
     glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
-    float Intensity = 500.0f; 
+    float Intensity = 300.0f; 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f) * Intensity;
     shader.Bind();
     shader.SetUniformVec3f("light.position", lightPos);
@@ -271,7 +271,7 @@ int main() {
     shader.SetUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
     shader.SetUniform1f("light.constant", 1.0f);
     shader.SetUniform1f("light.linear", 0.7f);
-    shader.SetUniform1f("light.quadratic", 0.032f);
+    shader.SetUniform1f("light.quadratic", 0.05f);
 
 
 

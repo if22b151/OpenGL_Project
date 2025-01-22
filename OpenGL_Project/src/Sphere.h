@@ -19,18 +19,15 @@ private:
     float m_orbitalradius;
     float m_orbitalspeed;
 
-private:
-    //NOTE: Change generateVertices() and generateIndices() to public because now we generate vertices everytime we create a new sphere
-    //but we want to generate them only once and then use them for all spheres
-    void generateVertices();
-    void generateIndices();
-
 public:
     Texture texture;
 
 public:
     Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius = 0.0f, float orbitalspeed = 0.0f);
     ~Sphere();
+
+    const std::vector<float>& generateVertices();
+    const std::vector<unsigned int>& generateIndices();
 
     //Getters
     inline const std::vector<float>& GetVertices() const { return m_vertices; }
