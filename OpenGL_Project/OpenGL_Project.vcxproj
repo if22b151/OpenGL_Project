@@ -618,6 +618,10 @@
     <Image Include="Resources\Textures\Uranus.jpg" />
     <Image Include="Resources\Textures\Venus.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Shaders\earth.shader" />
+    <Content Include="Resources\Textures\NormalMapEarth.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
