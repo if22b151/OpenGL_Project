@@ -158,6 +158,7 @@
     </None>
     <None Include="Resources\Shaders\earth.shader" />
     <None Include="Resources\Shaders\LightCube.shader" />
+    <None Include="Resources\Shaders\normal.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -614,6 +615,9 @@
     <Image Include="Resources\Textures\Moon.jpg" />
     <Image Include="Resources\Textures\Neptun.jpg" />
     <Image Include="Resources\Textures\NormalMapEarth.png" />
+    <Image Include="Resources\Textures\NormalMapMars.png" />
+    <Image Include="Resources\Textures\NormalMapMercury.png" />
+    <Image Include="Resources\Textures\NormalMapMoon.png" />
     <Image Include="Resources\Textures\Saturn.jpg" />
     <Image Include="Resources\Textures\Sun.jpg" />
     <Image Include="Resources\Textures\Sun2.0.jpg" />

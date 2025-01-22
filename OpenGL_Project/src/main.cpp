@@ -46,30 +46,27 @@ void DrawSphere(Renderer& renderer, Shader& shader, const Sphere& sphere, const 
     model = glm::rotate(model, glm::radians(sphere.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, sphere.GetScale());
     glm::mat4 mvp = viewProj * model;
-
+    shader.Bind();
     shader.SetUniformMat4f("u_Model", model);
     shader.SetUniformMat4f("u_MVP", mvp);
     sphere.texture.Bind();
     renderer.Draw(va, ib, shader);
 }
 
-void DrawEarth(Renderer& renderer, Shader& earthShader, const Sphere& sphere, const glm::mat4& viewProj, const VertexArray& va, const IndexBuffer& ib) {
+void DrawSphereWithNormalMapping(Renderer& renderer, Shader& normalShader, const Sphere& sphere, const glm::mat4& viewProj, const VertexArray& va, const IndexBuffer& ib) {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), sphere.GetPosition());
     model = glm::rotate(model, glm::radians(sphere.GetRotation().y), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, sphere.GetScale());
     glm::mat4 mvp = viewProj * model;
 
     glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-    earthShader.Bind();
+    normalShader.Bind();
     sphere.texture.Bind(0);
     sphere.normalMap.Bind(1);
-    earthShader.SetUniformMat4f("u_MVP", mvp);
-    earthShader.SetUniformMat4f("u_Model", model);
-    earthShader.SetUniformMat3f("u_NormalMatrix", normalMatrix);
-    earthShader.SetUniformGLMVec3f("u_LightPos", glm::vec3(0.0f, 0.0f, 0.0f)); // Sun position
-    glm::vec3 cameraPos = glm::vec3(glm::inverse(viewProj)[3]);
-    earthShader.SetUniformGLMVec3f("u_CameraPos", cameraPos);
-    renderer.Draw(va, ib, earthShader);
+    normalShader.SetUniformMat4f("u_MVP", mvp);
+    normalShader.SetUniformMat4f("u_Model", model);
+    normalShader.SetUniformMat3f("u_NormalMatrix", normalMatrix);
+    renderer.Draw(va, ib, normalShader);
 }
 
 int main() {
@@ -182,10 +179,10 @@ int main() {
     shader.Bind();
     shader.SetUniform1i("u_Texture", 0);
 
-    Shader earthShader("Resources/Shaders/earth.shader");
-    earthShader.Bind();
-    earthShader.SetUniform1i("u_Texture", 0);
-    earthShader.SetUniform1i("u_NormalMap", 1);
+    Shader normalShader("Resources/Shaders/normal.shader");
+    normalShader.Bind();
+    normalShader.SetUniform1i("u_Texture", 0);
+    normalShader.SetUniform1i("u_NormalMap", 1);
 
     Shader lightCubeShader("Resources/Shaders/LightCube.shader");
 
@@ -193,7 +190,7 @@ int main() {
     sun.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     sun.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-    Sphere mercury(0.3f, 384, 216, "Resources/Textures/Mercury.jpg", 23.0f, 9.87f);
+    Sphere mercury(0.3f, 384, 216, "Resources/Textures/Mercury.jpg", 23.0f, 9.87f, "Resources/Textures/NormalMapMercury.png");
     mercury.SetPosition(glm::vec3(mercury.GetOrbitalRadius(), 0.0f, 0.0f));
     mercury.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
 
@@ -207,11 +204,11 @@ int main() {
     auto vertices = earth.GetVertices();
     auto indices = earth.GetIndices();
 
-    Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg", 2.0f, 9.0f);
+    Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg", 2.0f, 9.0f, "Resources/Textures/NormalMapMoon.png");
     moon.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
     moon.SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
-    Sphere mars(0.5f, 384, 216, "Resources/Textures/Mars.jpg", 45.0f, 7.87f);
+    Sphere mars(0.5f, 384, 216, "Resources/Textures/Mars.jpg", 45.0f, 7.87f, "Resources/Textures/NormalMapMars.png");
     mars.SetPosition(glm::vec3(mars.GetOrbitalRadius(), 0.0f, 0.0f));
     mars.SetScale(glm::vec3(0.7f, 0.7f, 0.7f));
 
@@ -296,6 +293,22 @@ int main() {
     shader.SetUniform1f("light.constant", 1.0f);
     shader.SetUniform1f("light.linear", 0.7f);
     shader.SetUniform1f("light.quadratic", 0.032f);
+    
+    
+    normalShader.Bind();
+    normalShader.SetUniformVec3f("light.position", lightPos);
+
+    normalShader.SetUniformVec3f("material.ambient", 0.1f, 0.1f, 0.1f);
+    normalShader.SetUniformVec3f("material.diffuse", 0.5f, 0.5f, 0.5f);
+    normalShader.SetUniformVec3f("material.specular", 0.5f, 0.5f, 0.5f);
+    normalShader.SetUniform1f("material.shininess", 32.0f);
+
+    normalShader.SetUniformVec3f("light.ambient", ambientColor);
+    normalShader.SetUniformVec3f("light.diffuse", diffuseColor);
+    normalShader.SetUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
+    normalShader.SetUniform1f("light.constant", 1.0f);
+    normalShader.SetUniform1f("light.linear", 0.7f);
+    normalShader.SetUniform1f("light.quadratic", 0.032f);
 
 
 
@@ -325,6 +338,7 @@ int main() {
 
         shader.Bind();
         shader.SetUniformVec3f("u_viewPos", camera.getPosition());
+        normalShader.SetUniformVec3f("u_viewPos", camera.getPosition());
 
         // Rotate the object
         rotationAngle += rotationSpeed * deltaTime;
@@ -358,11 +372,11 @@ int main() {
         neptune.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
 
         DrawSphere(renderer, shader, sun, viewProj, va, ib);
-        DrawSphere(renderer, shader, mercury, viewProj, va, ib);
+        DrawSphereWithNormalMapping(renderer, normalShader, mercury, viewProj, va, ib);
         DrawSphere(renderer, shader, venus, viewProj, va, ib);
-        DrawEarth(renderer, shader, earth, viewProj, va, ib);
-        DrawSphere(renderer, shader, moon, viewProj, va, ib);
-        DrawSphere(renderer, shader, mars, viewProj, va, ib);
+        DrawSphereWithNormalMapping(renderer, normalShader, earth, viewProj, va, ib);
+        DrawSphereWithNormalMapping(renderer, normalShader, moon, viewProj, va, ib);
+        DrawSphereWithNormalMapping(renderer, normalShader, mars, viewProj, va, ib);
         DrawSphere(renderer, shader, jupiter, viewProj, va, ib);
         DrawSphere(renderer, shader, saturn, viewProj, va, ib);
         DrawSphere(renderer, shader, uranus, viewProj, va, ib);
