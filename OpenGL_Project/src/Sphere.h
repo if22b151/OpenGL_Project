@@ -27,9 +27,10 @@ private:
 
 public:
     Texture texture;
+    Texture normalMap;
 
 public:
-    Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius = 0.0f, float orbitalspeed = 0.0f);
+    Sphere(float radius, int sectorcount, int stackcount, const std::string& texturepath, float orbitalradius = 0.0f, float orbitalspeed = 0.0f, const std::string& normalpath = "");
     ~Sphere();
 
     //Getters

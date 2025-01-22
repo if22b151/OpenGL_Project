@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-Sphere::Sphere(float radius, int sectorcount, int stackcount, const std::string texturepath, float orbitalradius, float orbitalspeed)
-    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath), m_orbitalradius(orbitalradius), m_orbitalspeed(orbitalspeed)
+Sphere::Sphere(float radius, int sectorcount, int stackcount, const std::string& texturepath, float orbitalradius, float orbitalspeed, const std::string& normalpath)
+    : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath), m_orbitalradius(orbitalradius), m_orbitalspeed(orbitalspeed), normalMap(normalpath)
 {
     generateVertices();
     generateIndices();
@@ -44,13 +44,21 @@ void Sphere::generateVertices()
             m_vertices.push_back(v);
 
             // Normals
-            float nx = x / m_radius;  
-            float ny = y / m_radius;  
-            float nz = z / m_radius;  
-            
-            m_vertices.push_back(nx);
-            m_vertices.push_back(ny);
-            m_vertices.push_back(nz);
+            glm::vec3 normal = glm::normalize(glm::vec3(x, y, z));
+            m_vertices.push_back(normal.x);
+            m_vertices.push_back(normal.y);
+            m_vertices.push_back(normal.z);
+
+            // Tangent
+            glm::vec3 tangent;
+            if (stack == 0 || stack == m_stackcount) {
+                tangent = glm::vec3(1.0f, 0.0f, 0.0f); // Arbitrary tangent for poles
+            } else {
+                tangent = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), normal));
+            }
+            m_vertices.push_back(tangent.x);
+            m_vertices.push_back(tangent.y);
+            m_vertices.push_back(tangent.z);
         }
     }
 }
