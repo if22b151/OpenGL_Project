@@ -428,3 +428,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /OpenGL_Project/src/vendor/glm/glm.cppm
+/.idea
