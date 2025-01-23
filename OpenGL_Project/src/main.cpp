@@ -78,7 +78,6 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 
 
     /* Create a windowed mode window and its OpenGL context */
@@ -97,10 +96,6 @@ int main() {
     if (glewInit() != GLEW_OK)
         std::cout << "Error!" << std::endl;
 
-
-
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(Renderer::GLDebugMessage, 0);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -266,12 +261,6 @@ int main() {
     float rotationAngle = 0.0f;
 
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 430");
 
     Camera camera;
 
@@ -330,6 +319,14 @@ int main() {
 
 
     bool isRotating = true;
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 430");
+ 
     while (!glfwWindowShouldClose(window)) {
         renderer.Clear();
 
