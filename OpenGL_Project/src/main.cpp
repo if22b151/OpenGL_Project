@@ -179,6 +179,10 @@ int main() {
     shader.Bind();
     shader.SetUniform1i("u_Texture", 0);
 
+    Shader sunShader("Resources/Shaders/sun.shader");
+    sunShader.Bind();
+    sunShader.SetUniform1i("u_Texture", 0);
+
     Shader normalShader("Resources/Shaders/normal.shader");
     normalShader.Bind();
     normalShader.SetUniform1i("u_Texture", 0);
@@ -186,7 +190,7 @@ int main() {
 
     Shader lightCubeShader("Resources/Shaders/LightCube.shader");
 
-    Sphere sun(1.0f, 384, 216, "Resources/Textures/Sun2.0.jpg");
+    Sphere sun(1.0f, 384, 216, "Resources/Textures/Sun.jpg");
     sun.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     sun.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
@@ -308,7 +312,22 @@ int main() {
     normalShader.SetUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
     normalShader.SetUniform1f("light.constant", 1.0f);
     normalShader.SetUniform1f("light.linear", 0.7f);
-    normalShader.SetUniform1f("light.quadratic", 0.032f);
+    normalShader.SetUniform1f("light.quadratic", 0.032f);normalShader.Bind();
+
+    sunShader.Bind();
+    sunShader.SetUniformVec3f("light.position", lightPos);
+
+    sunShader.SetUniformVec3f("material.ambient", 0.1f, 0.1f, 0.1f);
+    sunShader.SetUniformVec3f("material.diffuse", 0.5f, 0.5f, 0.5f);
+    sunShader.SetUniformVec3f("material.specular", 0.5f, 0.5f, 0.5f);
+    sunShader.SetUniform1f("material.shininess", 32.0f);
+    
+    sunShader.SetUniformVec3f("light.ambient", ambientColor);
+    sunShader.SetUniformVec3f("light.diffuse", diffuseColor);
+    sunShader.SetUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
+    sunShader.SetUniform1f("light.constant", 1.0f);
+    sunShader.SetUniform1f("light.linear", 0.7f);
+    sunShader.SetUniform1f("light.quadratic", 0.032f);
 
 
 
@@ -371,7 +390,7 @@ int main() {
         uranus.SetRotation(glm::vec3(rotationAngle, 0.0f, 0.0f));
         neptune.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));
 
-        DrawSphere(renderer, shader, sun, viewProj, va, ib);
+        DrawSphere(renderer, sunShader, sun, viewProj, va, ib);
         DrawSphereWithNormalMapping(renderer, normalShader, mercury, viewProj, va, ib);
         DrawSphere(renderer, shader, venus, viewProj, va, ib);
         DrawSphereWithNormalMapping(renderer, normalShader, earth, viewProj, va, ib);
