@@ -5,12 +5,9 @@
 
 Sphere::Sphere(float radius, int sectorcount, int stackcount, const std::string& texturepath, float orbitalradius, float orbitalspeed, const std::string& normalpath)
     : m_radius(radius), m_sectorcount(sectorcount), m_stackcount(stackcount), texture(texturepath), m_orbitalradius(orbitalradius), m_orbitalspeed(orbitalspeed), normalMap(normalpath)
-{
-    generateVertices();
-    generateIndices();
-}
+{}
 
-void Sphere::generateVertices()
+const std::vector<float>& Sphere::generateVertices()
 {
     m_vertices.clear();
 
@@ -52,7 +49,7 @@ void Sphere::generateVertices()
             // Tangent
             glm::vec3 tangent;
             if (stack == 0 || stack == m_stackcount) {
-                tangent = glm::vec3(1.0f, 0.0f, 0.0f); // Arbitrary tangent for poles
+                tangent = glm::vec3(1.0f, 0.0f, 0.0f);
             } else {
                 tangent = glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), normal));
             }
@@ -62,9 +59,10 @@ void Sphere::generateVertices()
             m_vertices.push_back(tangent.z);
         }
     }
+    return m_vertices;
 }
 
-void Sphere::generateIndices()
+const std::vector<unsigned int>& Sphere::generateIndices()
 {
     m_indices.clear();
 
@@ -89,6 +87,7 @@ void Sphere::generateIndices()
             m_indices.push_back(nextNext);
         }
     }
+    return m_indices;
 }
 
 

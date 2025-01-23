@@ -56,7 +56,7 @@ void main()
 {
     vec4 texColor = texture(u_Texture, v_TexCoord);
 
-    // Compute distance between fragment and light source
+    // distance between fragment and light source
     float distance = length(light.position - FragPos);
 
     // Calculate attenuation
@@ -82,11 +82,11 @@ void main()
     diffuse *= attenuation;
     specular *= attenuation;
     
-    // Add emissive term for the sun
-    vec3 emissive = vec3(1.0, 0.8, 0.4); // Bright orange-yellow color for the sun
-    emissive *= 1.5; // Adjust the brightness of the emission
+    // emissive term for the sun
+    vec3 emissive = vec3(1.0, 0.8, 0.4);
+    emissive *= 1.5; // brightness of the emission
 
-    // Sum all components to get final color
+    //final color
     vec3 result = ambient + diffuse + specular + emissive;
     color = vec4(result, 1.0) * texColor;
 }

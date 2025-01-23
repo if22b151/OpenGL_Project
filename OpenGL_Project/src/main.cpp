@@ -27,15 +27,14 @@
 
 float lastFrameTime = 0.0f;
 
-// Function to calculate and return delta time
 float getDeltaTime() {
-    // Get the current time
+    // current time
     float currentFrameTime = (float)glfwGetTime();
 
-    // Calculate delta time (time difference between frames)
+    // delta time
     float deltaTime = currentFrameTime - lastFrameTime;
 
-    // Update lastFrameTime for the next frame
+    // Update lastFrameTime
     lastFrameTime = currentFrameTime;
 
     return deltaTime;
@@ -175,7 +174,7 @@ int main() {
     lightcubeVB.Unbind();
 
     //shader
-    Shader shader("Resources/Shaders/Basic.shader");
+    Shader shader("Resources/Shaders/generalPlanet.shader");
     shader.Bind();
     shader.SetUniform1i("u_Texture", 0);
 
@@ -205,8 +204,8 @@ int main() {
     Sphere earth(0.8f, 384, 216, "Resources/Textures/Earth.jpg", 40.0f, 8.78f, "Resources/Textures/NormalMapEarth.png");
     earth.SetPosition(glm::vec3(earth.GetOrbitalRadius(), 0.0f, 0.0f));
     earth.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-    auto vertices = earth.GetVertices();
-    auto indices = earth.GetIndices();
+    auto vertices = earth.generateVertices();
+    auto indices = earth.generateIndices();
 
     Sphere moon(0.3f, 384, 216, "Resources/Textures/Moon.jpg", 2.0f, 9.0f, "Resources/Textures/NormalMapMoon.png");
     moon.SetScale(glm::vec3(0.4f, 0.4f, 0.4f));
@@ -257,7 +256,7 @@ int main() {
     vb.Unbind();
     ib.Unbind();
 
-    //create projection matrix, orthographic projection because we are in 2D
+    //create projection matrix, perspective projection because we are in 3D
     glm::mat4 proj = glm::perspective(glm::radians(50.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 300.0f);
 
 
@@ -279,7 +278,7 @@ int main() {
     Renderer renderer;
 
     glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
-    float Intensity = 500.0f; 
+    float Intensity = 300.0f; 
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f) * Intensity;
     shader.Bind();
     shader.SetUniformVec3f("light.position", lightPos);
@@ -296,7 +295,7 @@ int main() {
     shader.SetUniformVec3f("light.specular", 1.0f, 1.0f, 1.0f);
     shader.SetUniform1f("light.constant", 1.0f);
     shader.SetUniform1f("light.linear", 0.7f);
-    shader.SetUniform1f("light.quadratic", 0.032f);
+    shader.SetUniform1f("light.quadratic", 0.05f);
     
     
     normalShader.Bind();
@@ -330,8 +329,7 @@ int main() {
     sunShader.SetUniform1f("light.quadratic", 0.032f);
 
 
-
-
+    bool isRotating = true;
     while (!glfwWindowShouldClose(window)) {
         renderer.Clear();
 
@@ -358,26 +356,36 @@ int main() {
         shader.Bind();
         shader.SetUniformVec3f("u_viewPos", camera.getPosition());
         normalShader.SetUniformVec3f("u_viewPos", camera.getPosition());
+        
 
-        // Rotate the object
-        rotationAngle += rotationSpeed * deltaTime;
-        if (rotationAngle > 360.0f)
-            rotationAngle -= 360.0f;
+        bool spacePressed = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 
-        float time = (float)glfwGetTime() / 60.0f;
+        static bool lastSpaceState = false;
+        if (spacePressed && !lastSpaceState) {
+            isRotating = !isRotating;
+        }
+        lastSpaceState = spacePressed;
+        
+        if (isRotating) {
+            rotationAngle += rotationSpeed * deltaTime;
+            if (rotationAngle > 360.0f)
+                rotationAngle -= 360.0f;
 
-        // Move the object around the sun
-        mercury.SetPosition(-(glm::vec3(mercury.GetOrbitalRadius() * cos(-time * mercury.GetOrbitalSpeed()), 0.0f, mercury.GetOrbitalRadius() * sin(-time * mercury.GetOrbitalSpeed()))));
-        venus.SetPosition(glm::vec3(venus.GetOrbitalRadius() * cos(-time * venus.GetOrbitalSpeed()), 0.0f, venus.GetOrbitalRadius() * sin(-time * venus.GetOrbitalSpeed())));
-        earth.SetPosition(glm::vec3(earth.GetOrbitalRadius() * cos(-time * earth.GetOrbitalSpeed()), 0.0f, earth.GetOrbitalRadius() * sin(-time * earth.GetOrbitalSpeed())));
-        mars.SetPosition(-(glm::vec3(mars.GetOrbitalRadius() * cos(-time * mars.GetOrbitalSpeed()), 0.0f, mars.GetOrbitalRadius() * sin(-time * mars.GetOrbitalSpeed()))));
-        jupiter.SetPosition(-(glm::vec3(jupiter.GetOrbitalRadius() * cos(-time * jupiter.GetOrbitalSpeed()), 0.0f, jupiter.GetOrbitalRadius() * sin(-time * jupiter.GetOrbitalSpeed()))));
-        saturn.SetPosition(glm::vec3(saturn.GetOrbitalRadius() * cos(-time * saturn.GetOrbitalSpeed()), 0.0f, saturn.GetOrbitalRadius() * sin(-time * saturn.GetOrbitalSpeed())));
-        uranus.SetPosition(-(glm::vec3(uranus.GetOrbitalRadius() * cos(-time * uranus.GetOrbitalSpeed()), 0.0f, uranus.GetOrbitalRadius() * sin(-time * uranus.GetOrbitalSpeed()))));
-        neptune.SetPosition(glm::vec3(neptune.GetOrbitalRadius() * cos(-time * neptune.GetOrbitalSpeed()), 0.0f, neptune.GetOrbitalRadius() * sin(-time * neptune.GetOrbitalSpeed())));
+            float time = (float)glfwGetTime() / 60.0f;
 
-        // Update moon's position relative to Earth
-        moon.SetPosition(earth.GetPosition() + glm::vec3(moon.GetOrbitalRadius() * cos(time * moon.GetOrbitalSpeed()), 0.0f, moon.GetOrbitalRadius() * sin(time * moon.GetOrbitalSpeed())));
+            mercury.SetPosition(-(glm::vec3(mercury.GetOrbitalRadius() * cos(-time * mercury.GetOrbitalSpeed()), 0.0f, mercury.GetOrbitalRadius() * sin(-time * mercury.GetOrbitalSpeed()))));
+            venus.SetPosition(glm::vec3(venus.GetOrbitalRadius() * cos(-time * venus.GetOrbitalSpeed()), 0.0f, venus.GetOrbitalRadius() * sin(-time * venus.GetOrbitalSpeed())));
+            earth.SetPosition(glm::vec3(earth.GetOrbitalRadius() * cos(-time * earth.GetOrbitalSpeed()), 0.0f, earth.GetOrbitalRadius() * sin(-time * earth.GetOrbitalSpeed())));
+            mars.SetPosition(-(glm::vec3(mars.GetOrbitalRadius() * cos(-time * mars.GetOrbitalSpeed()), 0.0f, mars.GetOrbitalRadius() * sin(-time * mars.GetOrbitalSpeed()))));
+            jupiter.SetPosition(-(glm::vec3(jupiter.GetOrbitalRadius() * cos(-time * jupiter.GetOrbitalSpeed()), 0.0f, jupiter.GetOrbitalRadius() * sin(-time * jupiter.GetOrbitalSpeed()))));
+            saturn.SetPosition(glm::vec3(saturn.GetOrbitalRadius() * cos(-time * saturn.GetOrbitalSpeed()), 0.0f, saturn.GetOrbitalRadius() * sin(-time * saturn.GetOrbitalSpeed())));
+            uranus.SetPosition(-(glm::vec3(uranus.GetOrbitalRadius() * cos(-time * uranus.GetOrbitalSpeed()), 0.0f, uranus.GetOrbitalRadius() * sin(-time * uranus.GetOrbitalSpeed()))));
+            neptune.SetPosition(glm::vec3(neptune.GetOrbitalRadius() * cos(-time * neptune.GetOrbitalSpeed()), 0.0f, neptune.GetOrbitalRadius() * sin(-time * neptune.GetOrbitalSpeed())));
+
+            // Update moon's position relative to Earth
+            moon.SetPosition(earth.GetPosition() + glm::vec3(moon.GetOrbitalRadius() * cos(time * moon.GetOrbitalSpeed()), 0.0f, moon.GetOrbitalRadius() * sin(time * moon.GetOrbitalSpeed())));
+        } 
+
 
         // Rotate the object around its own axis
         sun.SetRotation(glm::vec3(0.0f, rotationAngle, 0.0f));

@@ -6,26 +6,24 @@ layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec3 tangent;
 
-out vec3 FragPos;    // Fragment position in world space
+out vec3 FragPos;    // Fragment position -> world space
 out vec2 v_TexCoord; // Texture coordinates
 out mat3 v_TBN;      // Tangent-Bitangent-Normal matrix
 
-uniform mat4 u_Model;      // Model matrix
-uniform mat4 u_MVP;        // Model-View-Projection matrix
+uniform mat4 u_Model;
+uniform mat4 u_MVP;
 uniform mat3 u_NormalMatrix; // Transpose of the inverse of the model matrix
 
 void main() 
 {
-    // Transform position to clip space
+    // Transform position -> clip space
     gl_Position = u_MVP * vec4(position, 1.0);
     
-    // Compute the fragment position in world space
     FragPos = vec3(u_Model * vec4(position, 1.0));
 
-    // Pass the texture coordinates
     v_TexCoord = texCoord;
 
-    // Calculate TBN matrix for normal mapping
+    // TBN matrix -> normal mapping
     vec3 T = normalize(u_NormalMatrix * tangent);
     vec3 N = normalize(u_NormalMatrix * normal);
     vec3 B = cross(N, T);
@@ -56,26 +54,26 @@ struct Light {
     float quadratic;
 };
 
-in vec3 FragPos;    // Fragment position in world space
-in vec2 v_TexCoord; // Texture coordinates
+in vec3 FragPos;    
+in vec2 v_TexCoord; 
 in mat3 v_TBN;      // Tangent-Bitangent-Normal matrix
 
-uniform vec3 u_viewPos;        // Camera position in world space
-uniform Material material;     // Material properties
-uniform Light light;           // Light properties
-uniform sampler2D u_Texture;   // Diffuse texture
+uniform vec3 u_viewPos;        // Camera position -> world space
+uniform Material material;
+uniform Light light;
+uniform sampler2D u_Texture;
 uniform sampler2D u_NormalMap; // Normal map
 
 void main()
 {
-    // Sample the normal map and convert it to [-1, 1] range
+    // Sample the normal map
     vec3 normal = texture(u_NormalMap, v_TexCoord).rgb;
     normal = normalize(normal * 2.0 - 1.0);
 
     // Transform normal from tangent space to world space
     vec3 worldNormal = normalize(v_TBN * normal);
 
-    // Compute distance between fragment and light source
+    // distance between fragment and light source
     float distance = length(light.position - FragPos);
 
     // Calculate attenuation
@@ -100,7 +98,7 @@ void main()
     diffuse *= attenuation;
     specular *= attenuation;
 
-    // Sum all components and apply texture
+    // Sum and apply on texture
     vec3 result = ambient + diffuse + specular;
     vec4 texColor = texture(u_Texture, v_TexCoord);
     color = vec4(result, 1.0) * texColor;

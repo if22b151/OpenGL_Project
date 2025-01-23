@@ -153,10 +153,9 @@
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\Basic.shader">
+    <None Include="Resources\Shaders\generalPlanet.shader">
       <FileType>Document</FileType>
     </None>
-    <None Include="Resources\Shaders\earth.shader" />
     <None Include="Resources\Shaders\LightCube.shader" />
     <None Include="Resources\Shaders\normal.shader" />
     <None Include="Resources\Shaders\sun.shader" />
